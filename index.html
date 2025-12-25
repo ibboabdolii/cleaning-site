@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Städtjänst - Professionell städning i Stockholm</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes slideIn {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .animate-slide-in { animation: slideIn 0.3s ease-out; }
+        .chat-bubble { max-width: 80%; }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="bg-white shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold">
+                    S
+                </div>
+                <span class="text-xl font-bold text-gray-900">Städtjänst</span>
+            </div>
+            <nav class="hidden md:flex gap-6">
+                <a href="#" class="text-gray-600 hover:text-gray-900">Tjänster</a>
+                <a href="#" class="text-gray-600 hover:text-gray-900">Priser</a>
+                <a href="#" class="text-gray-600 hover:text-gray-900">FAQ</a>
+                <button onclick="showBooking()" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
+                    Boka nu
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="hero" class="bg-gradient-to-br from-blue-50 to-indigo-100 py-20">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <h1 class="text-5xl font-bold text-gray-900 mb-6">
+                Professionell Städning i Stockholm
+            </h1>
+            <p class="text-xl text-gray-700 mb-8">
+                Boka kvalitetsstädning på 2 minuter. Vi tar hand om ditt hem – du får tid för det du älskar.
+            </p>
+            <button onclick="showBooking()" class="bg-blue-600 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-blue-700 shadow-lg">
+                Boka städning →
+            </button>
+
+            <!-- Trust Bar -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-12">
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <div class="text-3xl mb-2">🔒</div>
+                    <div class="font-semibold">Fullständigt försäkrade</div>
+                    <div class="text-sm text-gray-600">10 miljoner kr</div>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <div class="text-3xl mb-2">💰</div>
+                    <div class="font-semibold">RUT-avdrag direkt</div>
+                    <div class="text-sm text-gray-600">Betala bara halva priset</div>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <div class="text-3xl mb-2">🌿</div>
+                    <div class="font-semibold">Miljövänliga produkter</div>
+                    <div class="text-sm text-gray-600">Allergivänligt</div>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <div class="text-3xl mb-2">⭐</div>
+                    <div class="font-semibold">4.9 av 5 stjärnor</div>
+                    <div class="text-sm text-gray-600">487 recensioner</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="py-16 bg-white">
+        <div class="max-w-6xl mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12">Våra tjänster</h2>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="border rounded-lg p-6 hover:shadow-lg transition">
+                    <h3 class="text-2xl font-bold mb-3">🏠 Hemstädning</h3>
+                    <p class="text-gray-600 mb-4">
+                        Regelbunden städning av ditt hem. Vi dammsuger, torkar ytor och gör ditt hem skinande rent.
+                    </p>
+                    <div class="text-blue-600 font-semibold mb-4">Från 25 kr/kvm · 2-4 timmar</div>
+                    <button onclick="startBooking('hemstadning')" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700">
+                        Boka hemstädning
+                    </button>
+                </div>
+                <div class="border rounded-lg p-6 hover:shadow-lg transition">
+                    <h3 class="text-2xl font-bold mb-3">🚚 Flyttstädning</h3>
+                    <p class="text-gray-600 mb-4">
+                        Garanterad flyttstädning enligt branschstandard. Perfekt inför flytt eller för att få tillbaka din deposition.
+                    </p>
+                    <div class="text-blue-600 font-semibold mb-4">Från 45 kr/kvm · 3-6 timmar</div>
+                    <button onclick="startBooking('flyttstadning')" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700">
+                        Boka flyttstädning
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Booking Funnel (Hidden by default) -->
+    <div id="bookingModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-lg max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <div class="p-6">
+                <!-- Progress Bar -->
+                <div class="mb-6">
+                    <div class="flex justify-between mb-2">
+                        <span class="text-sm font-medium">Steg <span id="currentStep">1</span> av 5</span>
+                        <button onclick="closeBooking()" class="text-gray-500 hover:text-gray-700">✕</button>
+                    </div>
+                    <div class="h-2 bg-gray-200 rounded-full">
+                        <div id="progressBar" class="h-2 bg-blue-600 rounded-full transition-all" style="width: 20%"></div>
+                    </div>
+                </div>
+
+                <!-- Step Content -->
+                <div id="stepContent"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Chat Widget -->
+    <button id="chatButton" onclick="toggleChat()" class="fixed bottom-6 right-6 bg-blue-600 text-white p-4 rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition z-40">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+        </svg>
+    </button>
+
+    <!-- Chat Window -->
+    <div id="chatWindow" class="fixed bottom-24 right-6 w-96 h-[500px] bg-white rounded-lg shadow-2xl hidden flex-col z-40">
+        <div class="bg-blue-600 text-white p-4 rounded-t-lg flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 bg-white bg-opacity-20 rounded-full flex items-center justify-center text-sm">AI</div>
+                <div>
+                    <div class="font-semibold">Städassistent</div>
+                    <div class="text-xs opacity-90">Alltid redo att hjälpa</div>
+                </div>
+            </div>
+            <button onclick="toggleChat()" class="text-white hover:bg-white hover:bg-opacity-20 rounded p-1">✕</button>
+        </div>
+        
+        <div id="chatMessages" class="flex-1 overflow-y-auto p-4 space-y-3">
+            <div class="chat-bubble bg-gray-100 rounded-lg p-3 animate-slide-in">
+                <div class="text-sm font-semibold mb-1">AI Assistent</div>
+                <div class="text-sm">Hej! 👋 Jag kan hjälpa dig boka städning. Hur många kvadratmeter är din bostad?</div>
+            </div>
+        </div>
+        
+        <div class="p-4 border-t">
+            <div class="flex gap-2">
+                <input 
+                    type="text" 
+                    id="chatInput"
+                    placeholder="Skriv ditt meddelande..."
+                    class="flex-1 border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
+                    onkeypress="if(event.key==='Enter') sendMessage()"
+                >
+                <button onclick="sendMessage()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+                    →
+                </button>
+            </div>
+            <div class="flex gap-2 mt-2">
+                <button onclick="quickReply('75 kvm lägenhet')" class="text-xs bg-gray-100 px-3 py-1 rounded-full hover:bg-gray-200">75 kvm lägenhet</button>
+                <button onclick="quickReply('Vad kostar det?')" class="text-xs bg-gray-100 px-3 py-1 rounded-full hover:bg-gray-200">Vad kostar det?</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentBookingStep = 1;
+        let bookingData = {};
+
+        const steps = {
+            1: {
+                title: 'Postnummer & Tjänst',
+                render: () => `
+                    <h2 class="text-2xl font-bold mb-6">Vilket är ditt postnummer?</h2>
+                    <input type="text" id="postnummer" placeholder="11429" maxlength="5" 
+                        class="w-full border rounded-lg px-4 py-3 text-lg mb-6 focus:outline-none focus:ring-2 focus:ring-blue-600">
+                    
+                    <h3 class="text-xl font-bold mb-4">Välj tjänst</h3>
+                    <div class="space-y-3">
+                        <label class="flex items-start gap-3 border rounded-lg p-4 cursor-pointer hover:border-blue-600">
+                            <input type="radio" name="service" value="hemstadning" class="mt-1">
+                            <div>
+                                <div class="font-semibold">🏠 Hemstädning</div>
+                                <div class="text-sm text-gray-600">Från 25 kr/kvm · 2-4 timmar</div>
+                            </div>
+                        </label>
+                        <label class="flex items-start gap-3 border rounded-lg p-4 cursor-pointer hover:border-blue-600">
+                            <input type="radio" name="service" value="flyttstadning" class="mt-1">
+                            <div>
+                                <div class="font-semibold">🚚 Flyttstädning</div>
+                                <div class="text-sm text-gray-600">Från 45 kr/kvm · 3-6 timmar</div>
+                            </div>
+                        </label>
+                    </div>
+                    <button onclick="nextStep()" class="w-full bg-blue-600 text-white py-3 rounded-lg mt-6 hover:bg-blue-700">Nästa →</button>
+                `
+            },
+            2: {
+                title: 'Bostad Details',
+                render: () => `
+                    <h2 class="text-2xl font-bold mb-6">Berätta om din bostad</h2>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Kvadratmeter</label>
+                            <input type="number" id="sqm" placeholder="75" min="20" max="500"
+                                class="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                                oninput="updateEstimate()">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Antal rum</label>
+                            <input type="number" id="rooms" placeholder="3" min="1" max="10"
+                                class="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-600">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Tilläggstjänster</label>
+                            <div class="space-y-2">
+                                <label class="flex items-center gap-2">
+                                    <input type="checkbox" value="fonsterputs" onchange="updateEstimate()">
+                                    <span>Fönsterputs (+500 kr)</span>
+                                </label>
+                                <label class="flex items-center gap-2">
+                                    <input type="checkbox" value="ugn" onchange="updateEstimate()">
+                                    <span>Ugnsrengöring (+300 kr)</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div id="estimate" class="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-4">
+                            <div class="font-semibold mb-2">Uppskattad kostnad</div>
+                            <div class="text-2xl font-bold text-blue-600" id="estimatedPrice">0 kr</div>
+                            <div class="text-sm text-gray-600" id="estimatedTime">Cirka 0 timmar</div>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-3 mt-6">
+                        <button onclick="prevStep()" class="flex-1 border border-gray-300 py-3 rounded-lg hover:bg-gray-50">← Tillbaka</button>
+                        <button onclick="nextStep()" class="flex-1 bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700">Nästa →</button>
+                    </div>
+                `
+            },
+            3: {
+                title: 'Datum & Tid',
+                render: () => `
+                    <h2 class="text-2xl font-bold mb-6">När vill du ha städningen?</h2>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Datum</label>
+                            <input type="date" id="bookingDate" min="${getMinDate()}"
+                                class="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-600">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Tid</label>
+                            <div class="grid grid-cols-2 gap-3">
+                                ${['08:00', '10:00', '12:00', '14:00'].map(time => `
+                                    <label class="flex items-center justify-center border rounded-lg p-3 cursor-pointer hover:border-blue-600">
+                                        <input type="radio" name="time" value="${time}" class="mr-2">
+                                        ${time}
+                                    </label>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-3 mt-6">
+                        <button onclick="prevStep()" class="flex-1 border border-gray-300 py-3 rounded-lg hover:bg-gray-50">← Tillbaka</button>
+                        <button onclick="nextStep()" class="flex-1 bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700">Nästa →</button>
+                    </div>
+                `
+            },
+            4: {
+                title: 'Kontaktinformation',
+                render: () => `
+                    <h2 class="text-2xl font-bold mb-6">Dina uppgifter</h2>
+                    
+                    <div class="space-y-4">
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Förnamn</label>
+                                <input type="text" id="firstName" placeholder="Anna"
+                                    class="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-600">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Efternamn</label>
+                                <input type="text" id="lastName" placeholder="Andersson"
+                                    class="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-600">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium mb-2">E-post</label>
+                            <input type="email" id="email" placeholder="anna@example.com"
+                                class="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-600">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Telefon</label>
+                            <input type="tel" id="phone" placeholder="070 123 45 67"
+                                class="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-600">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Gatuadress</label>
+                            <input type="text" id="address" placeholder="Kungsgatan 1"
+                                class="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-600">
+                        </div>
+                    </div>
+
+                    <div class="flex gap-3 mt-6">
+                        <button onclick="prevStep()" class="flex-1 border border-gray-300 py-3 rounded-lg hover:bg-gray-50">← Tillbaka</button>
+                        <button onclick="nextStep()" class="flex-1 bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700">Nästa →</button>
+                    </div>
+                `
+            },
+            5: {
+                title: 'Bekräftelse',
+                render: () => `
+                    <div class="text-center py-8">
+                        <div class="text-6xl mb-4">🎉</div>
+                        <h2 class="text-3xl font-bold mb-4">Bokningsförfrågan mottagen!</h2>
+                        <p class="text-gray-600 mb-6">
+                            Vi skickar en bekräftelse till din e-post inom kort.
+                        </p>
+                        
+                        <div class="bg-gray-50 rounded-lg p-6 text-left mb-6">
+                            <div class="font-semibold mb-3">Sammanfattning</div>
+                            <div class="space-y-2 text-sm">
+                                <div class="flex justify-between">
+                                    <span>Tjänst:</span>
+                                    <span class="font-medium">${bookingData.service === 'hemstadning' ? 'Hemstädning' : 'Flyttstädning'}</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>Storlek:</span>
+                                    <span class="font-medium">${bookingData.sqm || 0} kvm</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>Pris:</span>
+                                    <span class="font-medium text-blue-600">${bookingData.price || 0} kr</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button onclick="closeBooking()" class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700">
+                            Stäng
+                        </button>
+                    </div>
+                `
+            }
+        };
+
+        function showBooking() {
+            document.getElementById('bookingModal').classList.remove('hidden');
+            document.getElementById('bookingModal').classList.add('flex');
+            renderStep();
+        }
+
+        function closeBooking() {
+            document.getElementById('bookingModal').classList.add('hidden');
+            document.getElementById('bookingModal').classList.remove('flex');
+            currentBookingStep = 1;
+            bookingData = {};
+        }
+
+        function startBooking(service) {
+            bookingData.service = service;
+            showBooking();
+        }
+
+        function renderStep() {
+            const step = steps[currentBookingStep];
+            document.getElementById('stepContent').innerHTML = step.render();
+            document.getElementById('currentStep').textContent = currentBookingStep;
+            document.getElementById('progressBar').style.width = (currentBookingStep / 5 * 100) + '%';
+        }
+
+        function nextStep() {
+            // Save current step data
+            if (currentBookingStep === 1) {
+                bookingData.postnummer = document.getElementById('postnummer')?.value;
+                bookingData.service = document.querySelector('input[name="service"]:checked')?.value;
+            } else if (currentBookingStep === 2) {
+                bookingData.sqm = document.getElementById('sqm')?.value;
+                bookingData.rooms = document.getElementById('rooms')?.value;
+            }
+
+            if (currentBookingStep < 5) {
+                currentBookingStep++;
+                renderStep();
+            }
+        }
+
+        function prevStep() {
+            if (currentBookingStep > 1) {
+                currentBookingStep--;
+                renderStep();
+            }
+        }
+
+        function updateEstimate() {
+            const sqm = parseInt(document.getElementById('sqm')?.value) || 0;
+            const service = bookingData.service || 'hemstadning';
+            const rate = service === 'hemstadning' ? 25 : 45;
+            
+            let price = sqm * rate;
+            const extras = document.querySelectorAll('input[type="checkbox"]:checked');
+            extras.forEach(extra => {
+                if (extra.value === 'fonsterputs') price += 500;
+                if (extra.value === 'ugn') price += 300;
+            });
+
+            const hours = Math.ceil(sqm / (service === 'hemstadning' ? 25 : 20));
+
+            bookingData.price = price;
+            document.getElementById('estimatedPrice').textContent = price.toLocaleString('sv-SE') + ' kr';
+            document.getElementById('estimatedTime').textContent = `Cirka ${hours} timmar`;
+        }
+
+        function getMinDate() {
+            const date = new Date();
+            date.setDate(date.getDate() + 2);
+            return date.toISOString().split('T')[0];
+        }
+
+        function toggleChat() {
+            const chatWindow = document.getElementById('chatWindow');
+            chatWindow.classList.toggle('hidden');
+            chatWindow.classList.toggle('flex');
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            if (!message) return;
+
+            addChatMessage(message, 'user');
+            input.value = '';
+
+            // Simulate AI response
+            setTimeout(() => {
+                const response = getAIResponse(message);
+                addChatMessage(response, 'ai');
+            }, 800);
+        }
+
+        function quickReply(text) {
+            document.getElementById('chatInput').value = text;
+            sendMessage();
+        }
+
+        function addChatMessage(text, sender) {
+            const messagesDiv = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'chat-bubble animate-slide-in ' + 
+                (sender === 'user' ? 'ml-auto bg-blue-600 text-white' : 'bg-gray-100') + 
+                ' rounded-lg p-3';
+            
+            if (sender === 'ai') {
+                messageDiv.innerHTML = `
+                    <div class="text-sm font-semibold mb-1">AI Assistent</div>
+                    <div class="text-sm">${text}</div>
+                `;
+            } else {
+                messageDiv.innerHTML = `<div class="text-sm">${text}</div>`;
+            }
+            
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        function getAIResponse(message) {
+            const lowerMessage = message.toLowerCase();
+            
+            if (lowerMessage.includes('kvm') || lowerMessage.includes('kvadrat')) {
+                const match = message.match(/\d+/);
+                const sqm = match ? match[0] : '75';
+                const price = sqm * 25;
+                const hours = Math.ceil(sqm / 25);
+                return `Perfekt! En hemstädning av ${sqm} kvm kostar cirka ${price.toLocaleString('sv-SE')} kr och tar ungefär ${hours} timmar. Vill du lägga till fönsterputs eller ugnsrengöring?`;
+            }
+            
+            if (lowerMessage.includes('pris') || lowerMessage.includes('kostar')) {
+                return 'Det beror på storleken! Hur många kvadratmeter är din bostad? Så kan jag räkna ut ett ungefärligt pris åt dig.';
+            }
+            
+            if (lowerMessage.includes('boka') || lowerMessage.includes('tid')) {
+                return 'Jättebra! Klicka på "Boka städning" så guidar jag dig genom bokningsprocessen. Det tar bara 2 minuter!';
+            }
+            
+            if (lowerMessage.includes('lördag') || lowerMessage.includes('helg')) {
+                return 'Ja, vi städar även lördagar mellan 09:00-15:00! Dock tillkommer en mindre helgavgift på 200 kr. Passar någon lördag för dig?';
+            }
+            
+            return 'Tack för din fråga! Jag kan hjälpa dig med att beräkna pris, boka tid eller svara på frågor om våra tjänster. Vad kan jag hjälpa dig med?';
+        }
+    </script>
+</body>
+</html>
