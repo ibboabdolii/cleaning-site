@@ -1,1002 +1,164 @@
-import React, { useState } from ‘react’;
-import { Menu, X, ChevronDown, ChevronRight, Check, Star, Shield, Globe, Lock, Clock, Zap, Users, Calendar, FileText, MessageSquare, CheckCircle, ArrowRight, Play } from ‘lucide-react’;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CleanAI - AI-Powered Cleaning Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { font-family: 'Hanken Grotesk', sans-serif; margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #282828; color: #ffffff; }
+        .glass-card { background: rgba(10,10,10,0.4); border: 1px solid rgba(255,255,255,0.10); backdrop-filter: blur(12px); border-radius: 0; }
+        .header-bar { background: #2c2c2e; border-bottom: 1px solid rgba(255,255,255,0.08); }
+        .surface-card { background: #363636; border: 1px solid rgba(255,255,255,0.08); border-radius: 0; }
+        .text-muted { color: #B6B6C1; }
+        .btn-primary { background: #ffffff; color: #282828; border: none; transition: all 0.2s ease; border-radius: 0; }
+        .btn-primary:hover { opacity: 0.9; }
+        .btn-secondary { background: transparent; color: #ffffff; border: 1px solid rgba(255,255,255,0.2); transition: all 0.2s ease; border-radius: 0; }
+        .btn-secondary:hover { border-color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.05); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .animate { animation: fadeIn 0.4s ease-out; }
+        .minimal-icon { stroke-width: 1; }
+    </style>
+</head>
+<body>
 
-const CleaningSaaSWebsite = () => {
-const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-const [activeTab, setActiveTab] = useState(‘homes’);
-const [activeFaq, setActiveFaq] = useState(null);
-const [demoStep, setDemoStep] = useState(1);
-const [formData, setFormData] = useState({
-name: ‘’,
-email: ‘’,
-company: ‘’,
-country: ‘Germany’,
-segment: ‘office’,
-message: ‘’
-});
-
-// Navigation
-const navigation = [
-{ name: ‘For Homes’, href: ‘#homes’ },
-{ name: ‘For Offices’, href: ‘#offices’ },
-{ name: ‘For Hotels’, href: ‘#hotels’ },
-{ name: ‘How AI Works’, href: ‘#ai-works’ }
-];
-
-// Demo scenario data
-const demoSteps = [
-{
-step: 1,
-title: “Customer Request”,
-subtitle: “AI extracts key information”,
-input: “I need a deep clean for our 150 sqm office in Madrid next Friday.”,
-processing: [“Service type: Deep clean”, “Size: 150 sqm”, “Location: Madrid”, “Date: Next Friday”]
-},
-{
-step: 2,
-title: “AI Generates Quote”,
-subtitle: “Transparent pricing breakdown”,
-quote: “€225”,
-breakdown: [
-{ label: “Base”, amount: “€50” },
-{ label: “150 sqm × €1”, amount: “€150” },
-{ label: “Deep clean”, amount: “+€25” }
-],
-provider: “María’s Team (4.9★)”
-},
-{
-step: 3,
-title: “Job Assigned & Completed”,
-subtitle: “Automated workflow”,
-actions: [
-“Booking confirmation sent to customer”,
-“Provider notified via app & voice”,
-“Job added to calendar”,
-“Photos uploaded on completion”,
-“AI follow-up: ‘How did we do?’”
-]
-}
-];
-
-// Header Component
-const Header = () => (
-<header className="fixed top-0 left-0 right-0 bg-white border-b border-gray-200 z-50">
-<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-<div className="flex justify-between items-center h-16">
-<div className="flex items-center">
-<div className="flex items-center space-x-2">
-<div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-<Zap className="w-5 h-5 text-white" />
-</div>
-<span className="text-xl font-bold text-gray-900">CleanAI</span>
-</div>
-</div>
-
-```
-      {/* Desktop Navigation */}
-      <nav className="hidden md:flex space-x-8">
-        {navigation.map((item) => (
-          <a
-            key={item.name}
-            href={item.href}
-            className="text-gray-700 hover:text-blue-600 transition-colors text-sm font-medium"
-          >
-            {item.name}
-          </a>
-        ))}
-      </nav>
-
-      <div className="hidden md:block">
-        <button className="bg-blue-600 text-white px-6 py-2.5 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
-          Request Demo
-        </button>
-      </div>
-
-      {/* Mobile menu button */}
-      <button
-        className="md:hidden"
-        onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-      >
-        {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-      </button>
-    </div>
-  </div>
-
-  {/* Mobile menu */}
-  {mobileMenuOpen && (
-    <div className="md:hidden bg-white border-t border-gray-200">
-      <div className="px-4 py-4 space-y-3">
-        {navigation.map((item) => (
-          <a
-            key={item.name}
-            href={item.href}
-            className="block text-gray-700 hover:text-blue-600 font-medium"
-            onClick={() => setMobileMenuOpen(false)}
-          >
-            {item.name}
-          </a>
-        ))}
-        <button className="w-full bg-blue-600 text-white px-6 py-2.5 rounded-lg font-semibold">
-          Request Demo
-        </button>
-      </div>
-    </div>
-  )}
-</header>
-```
-
-);
-
-// Hero Section
-const Hero = () => (
-<section className="pt-32 pb-20 bg-gradient-to-b from-gray-50 to-white">
-<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-<div className="text-center max-w-4xl mx-auto">
-<h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
-AI-powered cleaning operations for Europe’s best businesses
-</h1>
-<p className="text-xl text-gray-600 mb-8 leading-relaxed">
-Multi-language. Multi-tenant. AI at the core. From instant quoting to voice-enabled provider tools—built for Germany, Spain, Scandinavia, and the UK.
-</p>
-<div className="flex flex-col sm:flex-row gap-4 justify-center">
-<button className="bg-blue-600 text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-blue-700 transition-colors">
-Request Demo
-</button>
-<button className="border-2 border-blue-600 text-blue-600 px-8 py-4 rounded-lg font-semibold text-lg hover:bg-blue-50 transition-colors">
-Join Waitlist
-</button>
-</div>
-</div>
-
-```
-    {/* Hero Visual */}
-    <div className="mt-16 relative">
-      <div className="bg-gradient-to-r from-blue-600 to-blue-800 rounded-2xl p-8 shadow-2xl">
-        <div className="bg-white rounded-lg p-6">
-          <div className="flex items-center space-x-2 mb-4">
-            <div className="w-3 h-3 rounded-full bg-red-500"></div>
-            <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-            <div className="w-3 h-3 rounded-full bg-green-500"></div>
-          </div>
-          <div className="space-y-4">
-            <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-            <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-            <div className="grid grid-cols-3 gap-4 mt-6">
-              <div className="h-24 bg-blue-100 rounded"></div>
-              <div className="h-24 bg-blue-100 rounded"></div>
-              <div className="h-24 bg-blue-100 rounded"></div>
+    <!-- Language Selection Gate -->
+    <div id="langGate" class="fixed inset-0 bg-[#282828] flex items-center justify-center z-50">
+        <div class="text-center animate px-8">
+            <div class="w-16 h-16 bg-white flex items-center justify-center mx-auto mb-6 text-3xl">🏠</div>
+            <h1 class="text-5xl font-light text-white mb-2">CleanAI</h1>
+            <p class="text-lg text-muted mb-16">Select your language</p>
+            
+            <div class="grid grid-cols-2 gap-6 max-w-md mx-auto">
+                <button onclick="setLang('en','🇬🇧')" class="glass-card p-8 hover:bg-[rgba(255,255,255,0.05)] transition">
+                    <div class="text-4xl mb-3">🇬🇧</div><div class="text-lg font-light text-white">English</div>
+                </button>
+                <button onclick="setLang('de','🇩🇪')" class="glass-card p-8 hover:bg-[rgba(255,255,255,0.05)] transition">
+                    <div class="text-4xl mb-3">🇩🇪</div><div class="text-lg font-light text-white">Deutsch</div>
+                </button>
+                <button onclick="setLang('sv','🇸🇪')" class="glass-card p-8 hover:bg-[rgba(255,255,255,0.05)] transition">
+                    <div class="text-4xl mb-3">🇸🇪</div><div class="text-lg font-light text-white">Svenska</div>
+                </button>
+                <button onclick="setLang('es','🇪🇸')" class="glass-card p-8 hover:bg-[rgba(255,255,255,0.05)] transition">
+                    <div class="text-4xl mb-3">🇪🇸</div><div class="text-lg font-light text-white">Español</div>
+                </button>
             </div>
-          </div>
         </div>
-      </div>
-    </div>
-  </div>
-</section>
-```
-
-);
-
-// Value Proposition Cards
-const ValueProposition = () => (
-<section className="py-20 bg-white">
-<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-<h2 className="text-4xl font-bold text-center text-gray-900 mb-12">
-Why cleaning businesses choose us
-</h2>
-<div className="grid md:grid-cols-3 gap-8">
-<div className="bg-white border border-gray-200 rounded-xl p-8 hover:shadow-lg transition-shadow">
-<div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
-<Zap className="w-6 h-6 text-blue-600" />
-</div>
-<h3 className="text-2xl font-semibold text-gray-900 mb-3">AI Quotes in Seconds</h3>
-<p className="text-gray-600 leading-relaxed">
-No more manual estimates. Our AI reads customer requests, calculates pricing, and sends quotes instantly.
-</p>
-</div>
-
-```
-      <div className="bg-white border border-gray-200 rounded-xl p-8 hover:shadow-lg transition-shadow">
-        <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
-          <MessageSquare className="w-6 h-6 text-blue-600" />
-        </div>
-        <h3 className="text-2xl font-semibold text-gray-900 mb-3">Voice-Enabled Providers</h3>
-        <p className="text-gray-600 leading-relaxed">
-          Cleaners confirm jobs, update status, and report issues hands-free—on-site, in real time.
-        </p>
-      </div>
-
-      <div className="bg-white border border-gray-200 rounded-xl p-8 hover:shadow-lg transition-shadow">
-        <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
-          <Shield className="w-6 h-6 text-blue-600" />
-        </div>
-        <h3 className="text-2xl font-semibold text-gray-900 mb-3">Trust & Transparency</h3>
-        <p className="text-gray-600 leading-relaxed">
-          GDPR-compliant. Vetted providers. Real-time quality checks. Your customers see every step.
-        </p>
-      </div>
-    </div>
-  </div>
-</section>
-```
-
-);
-
-// How AI Works Overview
-const HowAIWorksOverview = () => (
-<section className="py-20 bg-gray-50">
-<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-<h2 className="text-4xl font-bold text-center text-gray-900 mb-4">
-Intelligent automation from inquiry to invoice
-</h2>
-<p className="text-xl text-center text-gray-600 mb-12">
-See how AI handles the entire workflow
-</p>
-
-```
-    <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-      <div className="text-center">
-        <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 text-white text-2xl font-bold">
-          1
-        </div>
-        <h3 className="text-xl font-semibold text-gray-900 mb-2">Customer Request</h3>
-        <p className="text-gray-600">
-          AI extracts details: location, service type, square meters, frequency
-        </p>
-      </div>
-
-      <div className="text-center">
-        <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 text-white text-2xl font-bold">
-          2
-        </div>
-        <h3 className="text-xl font-semibold text-gray-900 mb-2">Smart Processing</h3>
-        <p className="text-gray-600">
-          RAG retrieves pricing rules, availability, provider match
-        </p>
-      </div>
-
-      <div className="text-center">
-        <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 text-white text-2xl font-bold">
-          3
-        </div>
-        <h3 className="text-xl font-semibold text-gray-900 mb-2">Automated Booking</h3>
-        <p className="text-gray-600">
-          Booking confirmed, provider notified, schedule synced
-        </p>
-      </div>
     </div>
 
-    <div className="text-center mt-12">
-      <a href="#ai-works" className="inline-flex items-center text-blue-600 font-semibold hover:text-blue-700">
-        See How AI Works <ArrowRight className="w-5 h-5 ml-2" />
-      </a>
-    </div>
-  </div>
-</section>
-```
-
-);
-
-// Use Cases Cards
-const UseCases = () => (
-<section className="py-20 bg-white">
-<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-<h2 className="text-4xl font-bold text-center text-gray-900 mb-12">
-Built for every cleaning scenario
-</h2>
-<div className="grid md:grid-cols-3 gap-8">
-<a href="#homes" className="group bg-gradient-to-br from-blue-50 to-white border border-gray-200 rounded-xl p-8 hover:shadow-xl transition-all">
-<Users className="w-12 h-12 text-blue-600 mb-4" />
-<h3 className="text-2xl font-semibold text-gray-900 mb-3">For Homes</h3>
-<p className="text-gray-600 mb-4">
-Apartments, houses, villas. One-time deep cleans or recurring subscriptions.
-</p>
-<span className="inline-flex items-center text-blue-600 font-semibold group-hover:translate-x-1 transition-transform">
-Learn More <ArrowRight className="w-5 h-5 ml-2" />
-</span>
-</a>
-
-```
-      <a href="#offices" className="group bg-gradient-to-br from-blue-50 to-white border border-gray-200 rounded-xl p-8 hover:shadow-xl transition-all">
-        <Globe className="w-12 h-12 text-blue-600 mb-4" />
-        <h3 className="text-2xl font-semibold text-gray-900 mb-3">For Offices</h3>
-        <p className="text-gray-600 mb-4">
-          Daily, weekly, or event-based. Custom scheduling. Multi-location support.
-        </p>
-        <span className="inline-flex items-center text-blue-600 font-semibold group-hover:translate-x-1 transition-transform">
-          Learn More <ArrowRight className="w-5 h-5 ml-2" />
-        </span>
-      </a>
-
-      <a href="#hotels" className="group bg-gradient-to-br from-blue-50 to-white border border-gray-200 rounded-xl p-8 hover:shadow-xl transition-all">
-        <Calendar className="w-12 h-12 text-blue-600 mb-4" />
-        <h3 className="text-2xl font-semibold text-gray-900 mb-3">For Hotels</h3>
-        <p className="text-gray-600 mb-4">
-          Turnover cleaning, linen management, inspections. PMS integration.
-        </p>
-        <span className="inline-flex items-center text-blue-600 font-semibold group-hover:translate-x-1 transition-transform">
-          Learn More <ArrowRight className="w-5 h-5 ml-2" />
-        </span>
-      </a>
-    </div>
-  </div>
-</section>
-```
-
-);
-
-// Features Grid
-const Features = () => (
-<section className="py-20 bg-gray-50">
-<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-<h2 className="text-4xl font-bold text-center text-gray-900 mb-12">
-Everything you need to run cleaning operations
-</h2>
-<div className="grid md:grid-cols-3 gap-8">
-<div className="bg-white rounded-lg p-6 border border-gray-200">
-<Calendar className="w-10 h-10 text-blue-600 mb-4" />
-<h3 className="text-xl font-semibold text-gray-900 mb-2">Smart Scheduling</h3>
-<p className="text-gray-600">AI assigns jobs based on location, skills, and availability.</p>
-</div>
-
-```
-      <div className="bg-white rounded-lg p-6 border border-gray-200">
-        <Zap className="w-10 h-10 text-blue-600 mb-4" />
-        <h3 className="text-xl font-semibold text-gray-900 mb-2">Instant Quotes</h3>
-        <p className="text-gray-600">Deterministic pricing engine. No guesswork.</p>
-      </div>
-
-      <div className="bg-white rounded-lg p-6 border border-gray-200">
-        <MessageSquare className="w-10 h-10 text-blue-600 mb-4" />
-        <h3 className="text-xl font-semibold text-gray-900 mb-2">Voice Assistant</h3>
-        <p className="text-gray-600">Push-to-talk for providers. Hands-free updates.</p>
-      </div>
-
-      <div className="bg-white rounded-lg p-6 border border-gray-200">
-        <CheckCircle className="w-10 h-10 text-blue-600 mb-4" />
-        <h3 className="text-xl font-semibold text-gray-900 mb-2">Quality Control</h3>
-        <p className="text-gray-600">Photo uploads, checklists, AI-powered feedback analysis.</p>
-      </div>
-
-      <div className="bg-white rounded-lg p-6 border border-gray-200">
-        <Globe className="w-10 h-10 text-blue-600 mb-4" />
-        <h3 className="text-xl font-semibold text-gray-900 mb-2">Multi-Language</h3>
-        <p className="text-gray-600">German, Spanish, Swedish, Norwegian, Danish, English.</p>
-      </div>
-
-      <div className="bg-white rounded-lg p-6 border border-gray-200">
-        <Shield className="w-10 h-10 text-blue-600 mb-4" />
-        <h3 className="text-xl font-semibold text-gray-900 mb-2">GDPR Compliant</h3>
-        <p className="text-gray-600">EU-hosted. Full data transparency.</p>
-      </div>
-    </div>
-  </div>
-</section>
-```
-
-);
-
-// Trust & Compliance
-const TrustCompliance = () => (
-<section className="py-20 bg-white">
-<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-<h2 className="text-4xl font-bold text-center text-gray-900 mb-4">
-Built for Europe. Designed for trust.
-</h2>
-<p className="text-xl text-center text-gray-600 mb-12">
-We handle data with care. Your customers’ privacy is our priority.
-</p>
-<div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
-<div className="text-center">
-<div className="w-16 h-16 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-3">
-<Shield className="w-8 h-8 text-green-600" />
-</div>
-<p className="text-sm font-semibold text-gray-900">GDPR Compliant</p>
-</div>
-
-```
-      <div className="text-center">
-        <div className="w-16 h-16 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-3">
-          <CheckCircle className="w-8 h-8 text-green-600" />
-        </div>
-        <p className="text-sm font-semibold text-gray-900">ISO 27001</p>
-      </div>
-
-      <div className="text-center">
-        <div className="w-16 h-16 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-3">
-          <Globe className="w-8 h-8 text-green-600" />
-        </div>
-        <p className="text-sm font-semibold text-gray-900">EU-Hosted</p>
-      </div>
-
-      <div className="text-center">
-        <div className="w-16 h-16 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-3">
-          <Lock className="w-8 h-8 text-green-600" />
-        </div>
-        <p className="text-sm font-semibold text-gray-900">Encrypted</p>
-      </div>
-
-      <div className="text-center">
-        <div className="w-16 h-16 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-3">
-          <Users className="w-8 h-8 text-green-600" />
-        </div>
-        <p className="text-sm font-semibold text-gray-900">Vetted Providers</p>
-      </div>
-
-      <div className="text-center">
-        <div className="w-16 h-16 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-3">
-          <Clock className="w-8 h-8 text-green-600" />
-        </div>
-        <p className="text-sm font-semibold text-gray-900">24/7 Support</p>
-      </div>
-    </div>
-  </div>
-</section>
-```
-
-);
-
-// AI Demo Section
-const AIDemo = () => (
-<section id="ai-works" className="py-20 bg-gradient-to-b from-gray-50 to-white">
-<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-<h2 className="text-4xl font-bold text-center text-gray-900 mb-4">
-How our AI automates cleaning operations
-</h2>
-<p className="text-xl text-center text-gray-600 mb-12">
-From customer request to completed job—here’s how it works
-</p>
-
-```
-    {/* Demo Steps */}
-    <div className="max-w-4xl mx-auto">
-      <div className="flex justify-center mb-8 space-x-4">
-        {[1, 2, 3].map((step) => (
-          <button
-            key={step}
-            onClick={() => setDemoStep(step)}
-            className={`px-6 py-3 rounded-lg font-semibold transition-colors ${
-              demoStep === step
-                ? 'bg-blue-600 text-white'
-                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-            }`}
-          >
-            Step {step}
-          </button>
-        ))}
-      </div>
-
-      <div className="bg-white rounded-xl border border-gray-200 p-8 shadow-lg">
-        {demoStep === 1 && (
-          <div>
-            <h3 className="text-2xl font-bold text-gray-900 mb-2">Customer Request</h3>
-            <p className="text-gray-600 mb-6">AI extracts key information</p>
-            <div className="bg-gray-50 rounded-lg p-6 mb-6">
-              <p className="text-gray-900 italic">"{demoSteps[0].input}"</p>
-            </div>
-            <div className="space-y-3">
-              <p className="font-semibold text-gray-900">AI Processing:</p>
-              {demoSteps[0].processing.map((item, idx) => (
-                <div key={idx} className="flex items-center space-x-2">
-                  <Check className="w-5 h-5 text-green-600" />
-                  <span className="text-gray-700">{item}</span>
+    <!-- Main Site -->
+    <div id="site" class="hidden min-h-screen">
+        <nav class="header-bar sticky top-0 z-40 backdrop-blur-xl">
+            <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 bg-white flex items-center justify-center text-[#282828] font-bold text-sm">C</div>
+                    <span class="text-lg font-medium text-white">CleanAI</span>
                 </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {demoStep === 2 && (
-          <div>
-            <h3 className="text-2xl font-bold text-gray-900 mb-2">AI Generates Quote</h3>
-            <p className="text-gray-600 mb-6">Transparent pricing breakdown</p>
-            <div className="bg-blue-50 rounded-lg p-6 mb-6">
-              <div className="text-5xl font-bold text-blue-600 mb-4">{demoSteps[1].quote}</div>
-              <div className="space-y-2">
-                {demoSteps[1].breakdown.map((item, idx) => (
-                  <div key={idx} className="flex justify-between text-gray-700">
-                    <span>{item.label}</span>
-                    <span className="font-semibold">{item.amount}</span>
-                  </div>
-                ))}
-                <div className="border-t border-blue-200 pt-2 mt-2 flex justify-between text-lg font-bold text-gray-900">
-                  <span>Total</span>
-                  <span>€225</span>
+                <div class="flex items-center gap-8">
+                    <button onclick="page('home')" class="text-muted hover:text-white font-light text-sm transition" id="navHome">Home</button>
+                    <button onclick="page('pricing')" class="text-muted hover:text-white font-light text-sm transition" id="navPricing">Pricing</button>
+                    <button onclick="page('features')" class="text-muted hover:text-white font-light text-sm transition" id="navFeatures">Features</button>
+                    <button onclick="page('booking')" class="btn-primary px-5 py-2 text-sm font-medium" id="navCTA">Book Demo</button>
                 </div>
-              </div>
             </div>
-            <p className="text-gray-700">
-              <span className="font-semibold">Provider:</span> {demoSteps[1].provider}
-            </p>
-          </div>
-        )}
-
-        {demoStep === 3 && (
-          <div>
-            <h3 className="text-2xl font-bold text-gray-900 mb-2">Job Assigned & Completed</h3>
-            <p className="text-gray-600 mb-6">Automated workflow</p>
-            <div className="space-y-4">
-              {demoSteps[2].actions.map((action, idx) => (
-                <div key={idx} className="flex items-start space-x-3">
-                  <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <Check className="w-4 h-4 text-green-600" />
-                  </div>
-                  <span className="text-gray-700">{action}</span>
-                </div>
-              ))}
-            </div>
-            <div className="mt-6 bg-green-50 rounded-lg p-4 border border-green-200">
-              <p className="text-green-800 font-semibold">✓ Job completed. Quality confirmed. Invoice sent automatically.</p>
-            </div>
-          </div>
-        )}
-      </div>
-    </div>
-  </div>
-</section>
-```
-
-);
-
-// Use Case Pages (Tabs)
-const UseCasePages = () => (
-<section className="py-20 bg-white">
-<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-<div className="flex justify-center space-x-4 mb-12">
-<button
-onClick={() => setActiveTab(‘homes’)}
-className={`px-6 py-3 rounded-lg font-semibold transition-colors ${ activeTab === 'homes' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }`}
->
-For Homes
-</button>
-<button
-onClick={() => setActiveTab(‘offices’)}
-className={`px-6 py-3 rounded-lg font-semibold transition-colors ${ activeTab === 'offices' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }`}
->
-For Offices
-</button>
-<button
-onClick={() => setActiveTab(‘hotels’)}
-className={`px-6 py-3 rounded-lg font-semibold transition-colors ${ activeTab === 'hotels' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }`}
->
-For Hotels
-</button>
-</div>
-
-```
-    {activeTab === 'homes' && (
-      <div id="homes">
-        <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">Cleaning you can trust. Booked in 60 seconds.</h2>
-          <p className="text-xl text-gray-600 mb-6">
-            AI-powered quotes for apartments, houses, and villas. Recurring or one-time. Vetted professionals. Transparent pricing.
-          </p>
-          <div className="flex justify-center space-x-4">
-            <button className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700">
-              Get Instant Quote
-            </button>
-            <button className="border-2 border-blue-600 text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-blue-50">
-              See How It Works
-            </button>
-          </div>
-        </div>
-
-        <div className="grid md:grid-cols-3 gap-8 mb-16">
-          <div className="bg-gray-50 rounded-lg p-8 border border-gray-200">
-            <h3 className="text-xl font-bold text-gray-900 mb-3">Quick Clean</h3>
-            <p className="text-3xl font-bold text-blue-600 mb-4">From €49</p>
-            <ul className="space-y-2 text-gray-700">
-              <li className="flex items-start"><Check className="w-5 h-5 text-green-600 mr-2 mt-0.5" /> 2 hours</li>
-              <li className="flex items-start"><Check className="w-5 h-5 text-green-600 mr-2 mt-0.5" /> Living room, kitchen, bathroom</li>
-            </ul>
-          </div>
-
-          <div className="bg-blue-50 rounded-lg p-8 border-2 border-blue-600">
-            <h3 className="text-xl font-bold text-gray-900 mb-3">Deep Clean</h3>
-            <p className="text-3xl font-bold text-blue-600 mb-4">From €99</p>
-            <ul className="space-y-2 text-gray-700">
-              <li className="flex items-start"><Check className="w-5 h-5 text-green-600 mr-2 mt-0.5" /> 4 hours</li>
-              <li className="flex items-start"><Check className="w-5 h-5 text-green-600 mr-2 mt-0.5" /> All rooms, windows, appliances</li>
-            </ul>
-          </div>
-
-          <div className="bg-gray-50 rounded-lg p-8 border border-gray-200">
-            <h3 className="text-xl font-bold text-gray-900 mb-3">Move-In/Move-Out</h3>
-            <p className="text-3xl font-bold text-blue-600 mb-4">Custom</p>
-            <ul className="space-y-2 text-gray-700">
-              <li className="flex items-start"><Check className="w-5 h-5 text-green-600 mr-2 mt-0.5" /> 6+ hours</li>
-              <li className="flex items-start"><Check className="w-5 h-5 text-green-600 mr-2 mt-0.5" /> Full property reset</li>
-            </ul>
-          </div>
-        </div>
-
-        <div className="bg-green-50 rounded-lg p-8 border border-green-200 mb-16">
-          <div className="flex items-center justify-center space-x-8">
-            <div className="text-center">
-              <div className="text-3xl font-bold text-gray-900">4.9/5</div>
-              <div className="text-gray-600">Average rating</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-gray-900">5,000+</div>
-              <div className="text-gray-600">Happy homes</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-gray-900">98%</div>
-              <div className="text-gray-600">On-time rate</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    )}
-
-    {activeTab === 'offices' && (
-      <div id="offices">
-        <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">Office cleaning that scales with your business</h2>
-          <p className="text-xl text-gray-600 mb-6">
-            Daily, weekly, or event-based. Multi-location support. AI-powered scheduling and quality control.
-          </p>
-          <div className="flex justify-center space-x-4">
-            <button className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700">
-              Request Custom Quote
-            </button>
-          </div>
-        </div>
-
-        <div className="grid md:grid-cols-3 gap-8 mb-16">
-          <div className="bg-gray-50 rounded-lg p-8">
-            <h3 className="text-xl font-bold text-gray-900 mb-3">Daily Office</h3>
-            <p className="text-3xl font-bold text-blue-600 mb-4">From €200/week</p>
-            <p className="text-gray-600">Desks, floors, kitchens, restrooms. Fixed team, consistent schedule.</p>
-          </div>
-
-          <div className="bg-gray-50 rounded-lg p-8">
-            <h3 className="text-xl font-bold text-gray-900 mb-3">Weekly Deep Clean</h3>
-            <p className="text-3xl font-bold text-blue-600 mb-4">From €350/week</p>
-            <p className="text-gray-600">All areas plus windows, appliances. Flexible scheduling.</p>
-          </div>
-
-          <div className="bg-gray-50 rounded-lg p-8">
-            <h3 className="text-xl font-bold text-gray-900 mb-3">Event & Move-In</h3>
-            <p className="text-3xl font-bold text-blue-600 mb-4">Custom</p>
-            <p className="text-gray-600">Pre/post-event cleaning. Custom scopes.</p>
-          </div>
-        </div>
-      </div>
-    )}
-
-    {activeTab === 'hotels' && (
-      <div id="hotels">
-        <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">Turnover cleaning powered by AI</h2>
-          <p className="text-xl text-gray-600 mb-6">
-            Sync with your PMS. Automate room assignments. Track quality in real time. Built for hotels and hospitality.
-          </p>
-          <div className="flex justify-center space-x-4">
-            <button className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700">
-              Request Integration Demo
-            </button>
-          </div>
-        </div>
-
-        <div className="grid md:grid-cols-3 gap-8 mb-16">
-          <div className="bg-gray-50 rounded-lg p-8">
-            <h3 className="text-xl font-bold text-gray-900 mb-3">Room Turnover</h3>
-            <p className="text-gray-600 mb-4">Check-out to check-in cleaning. AI-scheduled based on occupancy.</p>
-            <p className="text-blue-600 font-semibold">Per-room pricing</p>
-          </div>
-
-          <div className="bg-gray-50 rounded-lg p-8">
-            <h3 className="text-xl font-bold text-gray-900 mb-3">Linen & Laundry</h3>
-            <p className="text-gray-600 mb-4">Coordinated with cleaning. Inventory tracking.</p>
-            <p className="text-blue-600 font-semibold">Bundled pricing</p>
-          </div>
-
-          <div className="bg-gray-50 rounded-lg p-8">
-            <h3 className="text-xl font-bold text-gray-900 mb-3">Event Spaces</h3>
-            <p className="text-gray-600 mb-4">Conference rooms, banquet halls. On-demand scheduling.</p>
-            <p className="text-blue-600 font-semibold">Custom pricing</p>
-          </div>
-        </div>
-
-        <div className="bg-blue-50 rounded-lg p-8 border border-blue-200">
-          <div className="flex items-center justify-center space-x-8">
-            <div className="text-center">
-              <div className="text-3xl font-bold text-gray-900">50+</div>
-              <div className="text-gray-600">Hotels</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-gray-900">15min</div>
-              <div className="text-gray-600">Avg. time saved</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-gray-900">98%</div>
-              <div className="text-gray-600">On-time completion</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    )}
-  </div>
-</section>
-```
-
-);
-
-// FAQ Component
-const FAQ = () => {
-const faqs = [
-{
-q: “How does pricing work?”,
-a: “Our AI calculates based on property size, service type, and frequency. You’ll see a transparent breakdown before booking.”
-},
-{
-q: “Can I reschedule?”,
-a: “Yes, up to 24 hours before your appointment.”
-},
-{
-q: “What if I’m not satisfied?”,
-a: “We offer a quality guarantee. If something’s not right, we’ll make it right.”
-},
-{
-q: “Which countries do you serve?”,
-a: “Germany, Spain, Sweden, Norway, Denmark, and the UK.”
-}
-];
-
-```
-return (
-  <section className="py-20 bg-gray-50">
-    <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-      <h2 className="text-4xl font-bold text-center text-gray-900 mb-12">
-        Frequently Asked Questions
-      </h2>
-      <div className="space-y-4">
-        {faqs.map((faq, idx) => (
-          <div key={idx} className="bg-white rounded-lg border border-gray-200 overflow-hidden">
-            <button
-              onClick={() => setActiveFaq(activeFaq === idx ? null : idx)}
-              className="w-full px-6 py-4 flex justify-between items-center hover:bg-gray-50 transition-colors"
-            >
-              <span className="font-semibold text-gray-900 text-left">{faq.q}</span>
-              <ChevronDown
-                className={`w-5 h-5 text-gray-600 transition-transform ${
-                  activeFaq === idx ? 'rotate-180' : ''
-                }`}
-              />
-            </button>
-            {activeFaq === idx && (
-              <div className="px-6 pb-4">
-                <p className="text-gray-600">{faq.a}</p>
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
-    </div>
-  </section>
-);
-```
-
-};
-
-// Demo Request Form
-const DemoForm = () => (
-<section className="py-20 bg-white">
-<div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
-<div className="text-center mb-12">
-<h2 className="text-4xl font-bold text-gray-900 mb-4">Ready to see CleanAI in action?</h2>
-<p className="text-xl text-gray-600">Request a personalized demo for your business</p>
-</div>
-
-```
-    <form className="bg-gray-50 rounded-xl p-8 border border-gray-200">
-      <div className="grid md:grid-cols-2 gap-6 mb-6">
-        <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-2">Full Name *</label>
-          <input
-            type="text"
-            className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 outline-none transition-colors"
-            placeholder="John Doe"
-            value={formData.name}
-            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-2">Email *</label>
-          <input
-            type="email"
-            className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 outline-none transition-colors"
-            placeholder="john@company.com"
-            value={formData.email}
-            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-          />
-        </div>
-      </div>
-
-      <div className="grid md:grid-cols-2 gap-6 mb-6">
-        <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-2">Company Name *</label>
-          <input
-            type="text"
-            className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 outline-none transition-colors"
-            placeholder="Acme Corp"
-            value={formData.company}
-            onChange={(e) => setFormData({ ...formData, company: e.target.value })}
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-2">Country *</label>
-          <select
-            className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 outline-none transition-colors"
-            value={formData.country}
-            onChange={(e) => setFormData({ ...formData, country: e.target.value })}
-          >
-            <option>Germany</option>
-            <option>Spain</option>
-            <option>Sweden</option>
-            <option>Norway</option>
-            <option>Denmark</option>
-            <option>United Kingdom</option>
-          </select>
-        </div>
-      </div>
-
-      <div className="mb-6">
-        <label className="block text-sm font-semibold text-gray-700 mb-2">Business Segment *</label>
-        <div className="flex space-x-4">
-          <label className="flex items-center">
-            <input
-              type="radio"
-              name="segment"
-              value="home"
-              checked={formData.segment === 'home'}
-              onChange={(e) => setFormData({ ...formData, segment: e.target.value })}
-              className="mr-2"
-            />
-            Home
-          </label>
-          <label className="flex items-center">
-            <input
-              type="radio"
-              name="segment"
-              value="office"
-              checked={formData.segment === 'office'}
-              onChange={(e) => setFormData({ ...formData, segment: e.target.value })}
-              className="mr-2"
-            />
-            Office
-          </label>
-          <label className="flex items-center">
-            <input
-              type="radio"
-              name="segment"
-              value="hotel"
-              checked={formData.segment === 'hotel'}
-              onChange={(e) => setFormData({ ...formData, segment: e.target.value })}
-              className="mr-2"
-            />
-            Hotel
-          </label>
-        </div>
-      </div>
-
-      <div className="mb-6">
-        <label className="block text-sm font-semibold text-gray-700 mb-2">Message (Optional)</label>
-        <textarea
-          rows="4"
-          className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 outline-none transition-colors"
-          placeholder="Tell us about your needs..."
-          value={formData.message}
-          onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-        ></textarea>
-      </div>
-
-      <button
-        type="submit"
-        className="w-full bg-blue-600 text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-blue-700 transition-colors"
-      >
-        Request Demo
-      </button>
-    </form>
-  </div>
-</section>
-```
-
-);
-
-// Final CTA
-const FinalCTA = () => (
-<section className="py-20 bg-gradient-to-r from-blue-600 to-blue-800">
-<div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-<h2 className="text-4xl font-bold text-white mb-4">
-Ready to automate your cleaning business?
-</h2>
-<p className="text-xl text-blue-100 mb-8">
-Join businesses across Germany, Spain, and Scandinavia already using AI to scale.
-</p>
-<div className="flex flex-col sm:flex-row gap-4 justify-center">
-<button className="bg-white text-blue-600 px-8 py-4 rounded-lg font-semibold text-lg hover:bg-gray-100 transition-colors">
-Request Demo
-</button>
-<button className="border-2 border-white text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-blue-700 transition-colors">
-Join Waitlist
-</button>
-</div>
-</div>
-</section>
-);
-
-// Footer
-const Footer = () => (
-<footer className="bg-gray-900 text-gray-300 py-12">
-<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-<div className="grid md:grid-cols-4 gap-8 mb-8">
-<div>
-<h3 className="text-white font-semibold mb-4">Product</h3>
-<ul className="space-y-2">
-<li><a href="#homes" className="hover:text-white transition-colors">For Homes</a></li>
-<li><a href="#offices" className="hover:text-white transition-colors">For Offices</a></li>
-<li><a href="#hotels" className="hover:text-white transition-colors">For Hotels</a></li>
-<li><a href="#ai-works" className="hover:text-white transition-colors">How AI Works</a></li>
-</ul>
-</div>
-
-```
-      <div>
-        <h3 className="text-white font-semibold mb-4">Company</h3>
-        <ul className="space-y-2">
-          <li><a href="#" className="hover:text-white transition-colors">About</a></li>
-          <li><a href="#" className="hover:text-white transition-colors">Blog</a></li>
-          <li><a href="#" className="hover:text-white transition-colors">Careers</a></li>
-        </ul>
-      </div>
-
-      <div>
-        <h3 className="text-white font-semibold mb-4">Legal</h3>
-        <ul className="space-y-2">
-          <li><a href="#" className="hover:text-white transition-colors">Privacy Policy</a></li>
-          <li><a href="#" className="hover:text-white transition-colors">Terms of Service</a></li>
-          <li><a href="#" className="hover:text-white transition-colors">GDPR Compliance</a></li>
-        </ul>
-      </div>
-
-      <div>
-        <h3 className="text-white font-semibold mb-4">Contact</h3>
-        <ul className="space-y-2">
-          <li>hello@cleanai.com</li>
-          <li>support@cleanai.com</li>
-        </ul>
-      </div>
+        </nav>
+        <div id="content"></div>
     </div>
 
-    <div className="border-t border-gray-800 pt-8 text-center text-sm">
-      <p>© 2025 CleanAI. All rights reserved.</p>
+    <!-- AI Widget -->
+    <button id="aiBtn" onclick="aiToggle()" class="hidden fixed bottom-6 right-6 w-12 h-12 bg-white text-[#282828] flex items-center justify-center hover:opacity-90 transition z-30">
+        <svg class="w-5 h-5 minimal-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
+    </button>
+
+    <div id="ai" class="hidden fixed bottom-24 right-6 w-96 max-w-[calc(100vw-3rem)] glass-card flex-col z-30" style="height:600px">
+        <div class="header-bar p-5 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-white/10 flex items-center justify-center">🤖</div>
+                <div><div class="text-sm font-medium text-white" id="aiTitle">AI Assistant</div><div class="text-xs text-muted" id="aiStatus">Online</div></div>
+            </div>
+            <button onclick="aiToggle()" class="text-white hover:text-muted text-xl transition">×</button>
+        </div>
+        <div id="msgs" class="flex-1 overflow-auto p-5 space-y-4 bg-[#282828]"></div>
+        <div class="p-5 border-t border-white/10">
+            <div class="flex gap-2 mb-3">
+                <input id="inp" placeholder="Type..." class="flex-1 bg-[#363636] border border-white/10 text-white text-sm px-4 py-2.5 outline-none focus:border-white/20 transition placeholder-muted" onkeypress="if(event.key=='Enter')send()">
+                <button onclick="send()" class="btn-primary px-5 font-medium text-sm">→</button>
+            </div>
+            <div id="quick" class="flex gap-2 flex-wrap"></div>
+        </div>
     </div>
-  </div>
-</footer>
-```
 
-);
+    <script>
+        const T={
+            en:{navHome:'Home',navPricing:'Pricing',navFeatures:'Features',navCTA:'Book Demo',aiTitle:'AI Assistant',aiStatus:'Online',
+                hero:{badge:'AI-Powered',title:'Intelligent Cleaning',sub:'for Europe & UK',desc:'AI-driven booking, scheduling, quality control. GDPR-compliant.',cta1:'Start Trial',cta2:'Book Demo'},
+                pricing:{title:'Transparent Pricing',s:'Small',m:'Medium',l:'Enterprise'},
+                features:{title:'Platform Features'},
+                booking:{title:'Book Service',home:'Home',office:'Office',hotel:'Hotel'}},
+            de:{navHome:'Start',navPricing:'Preise',navFeatures:'Funktionen',navCTA:'Demo',aiTitle:'KI-Assistent',aiStatus:'Online',
+                hero:{badge:'KI-Plattform',title:'Intelligente Reinigung',sub:'für Europa & UK',desc:'KI-Buchung, Planung, Qualität. DSGVO-konform.',cta1:'Testen',cta2:'Demo'},
+                pricing:{title:'Transparente Preise',s:'Klein',m:'Mittel',l:'Enterprise'},
+                features:{title:'Plattform-Funktionen'},
+                booking:{title:'Service buchen',home:'Haus',office:'Büro',hotel:'Hotel'}},
+            sv:{navHome:'Hem',navPricing:'Priser',navFeatures:'Funktioner',navCTA:'Demo',aiTitle:'AI-Assistent',aiStatus:'Online',
+                hero:{badge:'AI-plattform',title:'Intelligent städning',sub:'för Europa & UK',desc:'AI-bokning, schemaläggning, kvalitet. GDPR-säker.',cta1:'Testa',cta2:'Demo'},
+                pricing:{title:'Priser',s:'Liten',m:'Medium',l:'Enterprise'},
+                features:{title:'Plattformsfunktioner'},
+                booking:{title:'Boka',home:'Hem',office:'Kontor',hotel:'Hotell'}},
+            es:{navHome:'Inicio',navPricing:'Precios',navFeatures:'Características',navCTA:'Demo',aiTitle:'Asistente IA',aiStatus:'En línea',
+                hero:{badge:'Plataforma IA',title:'Limpieza inteligente',sub:'para Europa y UK',desc:'Reserva IA, programación, calidad. Cumple GDPR.',cta1:'Probar',cta2:'Demo'},
+                pricing:{title:'Precios',s:'Pequeño',m:'Mediano',l:'Enterprise'},
+                features:{title:'Características'},
+                booking:{title:'Reservar',home:'Casa',office:'Oficina',hotel:'Hotel'}}
+        };
+        let L='en',P='home',ctx={},hist=[];
 
-return (
-<div className="min-h-screen bg-white font-sans">
-<Header />
-<Hero />
-<ValueProposition />
-<HowAIWorksOverview />
-<UseCases />
-<Features />
-<TrustCompliance />
-<AIDemo />
-<UseCasePages />
-<FAQ />
-<DemoForm />
-<FinalCTA />
-<Footer />
-</div>
-);
-};
-
-export default CleaningSaaSWebsite;
+        function setLang(l,f){
+            L=l;localStorage.setItem('lang',l);
+            document.getElementById('langGate').classList.add('hidden');
+            document.getElementById('site').classList.remove('hidden');
+            document.getElementById('aiBtn').classList.add('flex');
+            document.getElementById('aiBtn').classList.remove('hidden');
+            update();page('home');aiInit();
+        }
+        
+        function update(){
+            const t=T[L];
+            document.getElementById('navHome').textContent=t.navHome;
+            document.getElementById('navPricing').textContent=t.navPricing;
+            document.getElementById('navFeatures').textContent=t.navFeatures;
+            document.getElementById('navCTA').textContent=t.navCTA;
+            document.getElementById('aiTitle').textContent=t.aiTitle;
+            document.getElementById('aiStatus').textContent=t.aiStatus;
+        }
+        
+        function page(p){P=p;ctx.page=p;const c=document.getElementById('content');c.innerHTML=p=='home'?home():p=='pricing'?pricing():p=='features'?features():booking();window.scrollTo(0,0);}
+        
+        function home(){const t=T[L].hero;return`<main class="max-w-7xl mx-auto px-6 py-20"><div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center mb-32"><div class="animate"><div class="inline-flex items-center gap-2 glass-card px-4 py-2 mb-6"><div class="w-2 h-2 bg-green-500" style="border-radius:50%"></div><span class="text-xs font-light text-muted">${t.badge}</span></div><h1 class="text-6xl font-light text-white mb-4">${t.title}</h1><p class="text-xl text-gray-300 font-light mb-2">${t.sub}</p><p class="text-base text-muted font-light mb-10">${t.desc}</p><div class="flex gap-4 mb-16"><button onclick="page('booking')" class="btn-primary px-6 py-3 text-sm font-medium">${t.cta1}</button><button onclick="aiToggle()" class="btn-secondary px-6 py-3 text-sm font-medium">${t.cta2}</button></div><div class="grid grid-cols-3 gap-8"><div><div class="text-3xl font-light text-white">2,500+</div><div class="text-xs text-muted">Bookings/mo</div></div><div><div class="text-3xl font-light text-white">4.9</div><div class="text-xs text-muted">Rating</div></div><div><div class="text-3xl font-light text-white">100%</div><div class="text-xs text-muted">GDPR</div></div></div></div><div class="glass-card p-1"><img src="https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=800&h=600&fit=crop" class="w-full" style="filter:grayscale(20%)"></div></div><div class="grid grid-cols-1 md:grid-cols-3 gap-6"><div class="surface-card p-8"><div class="text-4xl mb-6">🏠</div><h3 class="text-lg font-medium text-white mb-3">Home Cleaning</h3><p class="text-sm text-muted font-light">Professional cleaning for homes</p></div><div class="surface-card p-8"><div class="text-4xl mb-6">🏢</div><h3 class="text-lg font-medium text-white mb-3">Office Cleaning</h3><p class="text-sm text-muted font-light">B2B facility management</p></div><div class="surface-card p-8"><div class="text-4xl mb-6">🏨</div><h3 class="text-lg font-medium text-white mb-3">Hotels</h3><p class="text-sm text-muted font-light">Multi-site operations</p></div></div></main>`;}
+        
+        function pricing(){const t=T[L].pricing;return`<main class="max-w-7xl mx-auto px-6 py-20"><h1 class="text-5xl font-light text-white mb-16">${t.title}</h1><div class="grid grid-cols-1 md:grid-cols-3 gap-6"><div class="surface-card p-8"><div class="text-sm font-light text-muted mb-2">${t.s}</div><div class="text-4xl font-light text-white mb-6">€49<span class="text-lg text-muted">/mo</span></div><ul class="space-y-3 mb-8 text-sm text-muted"><li>→ 50 bookings/mo</li><li>→ AI assistant</li><li>→ Basic scheduling</li></ul><button onclick="page('booking')" class="btn-primary w-full py-3 text-sm">Start Trial</button></div><div class="surface-card p-8 border-white/20"><div class="text-sm font-light text-white mb-2">${t.m}</div><div class="text-4xl font-light text-white mb-6">€199<span class="text-lg text-muted">/mo</span></div><ul class="space-y-3 mb-8 text-sm text-muted"><li>→ 500 bookings/mo</li><li>→ Advanced AI + Voice</li><li>→ Quality control</li><li>→ Multi-tenant</li></ul><button onclick="page('booking')" class="btn-primary w-full py-3 text-sm">Start Trial</button></div><div class="surface-card p-8"><div class="text-sm font-light text-muted mb-2">${t.l}</div><div class="text-4xl font-light text-white mb-6">Custom</div><ul class="space-y-3 mb-8 text-sm text-muted"><li>→ Unlimited bookings</li><li>→ Full RBAC</li><li>→ White-label</li><li>→ Priority support</li></ul><button class="btn-secondary w-full py-3 text-sm">Contact Sales</button></div></div></main>`;}
+        
+        function features(){const t=T[L].features;return`<main class="max-w-7xl mx-auto px-6 py-20"><h1 class="text-5xl font-light text-white mb-16">${t.title}</h1><div class="grid grid-cols-1 md:grid-cols-2 gap-6"><div class="glass-card p-8"><svg class="w-8 h-8 minimal-icon text-white mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg><h3 class="text-xl font-medium text-white mb-3">AI Booking</h3><p class="text-sm text-muted font-light">Instant quotes based on property type and size</p></div><div class="glass-card p-8"><svg class="w-8 h-8 minimal-icon text-white mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg><h3 class="text-xl font-medium text-white mb-3">Smart Scheduling</h3><p class="text-sm text-muted font-light">Automated dispatch and route optimization</p></div><div class="glass-card p-8"><svg class="w-8 h-8 minimal-icon text-white mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg><h3 class="text-xl font-medium text-white mb-3">Quality Control</h3><p class="text-sm text-muted font-light">Digital checklists and photo verification</p></div><div class="glass-card p-8"><svg class="w-8 h-8 minimal-icon text-white mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg><h3 class="text-xl font-medium text-white mb-3">Multi-Tenant RBAC</h3><p class="text-sm text-muted font-light">Role-based access for all stakeholders</p></div><div class="glass-card p-8"><svg class="w-8 h-8 minimal-icon text-white mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/></svg><h3 class="text-xl font-medium text-white mb-3">Voice Interface</h3><p class="text-sm text-muted font-light">Push-to-talk and hands-free mode</p></div><div class="glass-card p-8"><svg class="w-8 h-8 minimal-icon text-white mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg><h3 class="text-xl font-medium text-white mb-3">Analytics</h3><p class="text-sm text-muted font-light">Real-time metrics and SLA tracking</p></div></div></main>`;}
+        
+        function booking(){const t=T[L].booking;return`<main class="max-w-2xl mx-auto px-6 py-20"><h1 class="text-5xl font-light text-white mb-16">${t.title}</h1><div class="glass-card p-8"><div class="mb-8"><div class="flex justify-between text-sm mb-3 text-muted"><span>Step 1/3</span><span>33%</span></div><div class="h-1 bg-white/10"><div class="h-full bg-white w-1/3"></div></div></div><label class="block font-light text-white mb-6">Property Type</label><div class="grid grid-cols-3 gap-4"><button onclick="aiMsg('home')" class="surface-card p-8 hover:bg-white/5 transition"><div class="text-4xl mb-3">🏠</div><div class="text-sm font-light text-white">${t.home}</div></button><button onclick="aiMsg('office')" class="surface-card p-8 hover:bg-white/5 transition"><div class="text-4xl mb-3">🏢</div><div class="text-sm font-light text-white">${t.office}</div></button><button onclick="aiMsg('hotel')" class="surface-card p-8 hover:bg-white/5 transition"><div class="text-4xl mb-3">🏨</div><div class="text-sm font-light text-white">${t.hotel}</div></button></div></div></main>`;}
+        
+        function aiToggle(){document.getElementById('ai').classList.toggle('hidden');document.getElementById('ai').classList.toggle('flex');}
+        
+        function aiInit(){hist=[];const g={en:'Hi! What type of service?',de:'Hallo! Welcher Service?',sv:'Hej! Vilken service?',es:'¡Hola! ¿Qué servicio?'};addMsg(g[L],'ai');setQ([{en:'Home',de:'Haus',sv:'Hem',es:'Casa'},{en:'Office',de:'Büro',sv:'Kontor',es:'Oficina'}]);}
+        
+        function send(){const i=document.getElementById('inp');const m=i.value.trim();if(!m)return;addMsg(m,'user');i.value='';aiMsg(m);}
+        
+        function aiMsg(m){hist.push({r:'user',c:m});setTimeout(()=>{const r=aiReply(m);hist.push({r:'ai',c:r.msg});addMsg(r.msg,'ai');if(r.q)setQ(r.q);if(r.nav)setTimeout(()=>page(r.nav),800);},500);}
+        
+        function aiReply(m){const l=m.toLowerCase();if(l.includes('home')||l.includes('haus')||l.includes('hem')||l.includes('casa')){return{msg:{en:'Great! How many m²?',de:'Super! Wie viele m²?',sv:'Bra! Hur många m²?',es:'¡Bien! ¿Cuántos m²?'}[L],q:[{en:'50-100m²',de:'50-100m²',sv:'50-100m²',es:'50-100m²'}],nav:'booking'};}if(l.includes('office')||l.includes('büro')||l.includes('kontor')){return{msg:{en:'Perfect! How many employees?',de:'Perfekt! Wie viele Mitarbeiter?',sv:'Perfekt! Hur många anställda?',es:'¡Perfecto! ¿Cuántos empleados?'}[L],q:[{en:'1-10',de:'1-10',sv:'1-10',es:'1-10'}]};}if(/\d+/.test(m)){return{msg:{en:'I recommend Medium plan (€199/mo). Show pricing?',de:'Ich empfehle Medium (199€/Monat). Preise zeigen?',sv:'Jag rekommenderar Medium (199€/månad). Visa priser?',es:'Recomiendo Medium (199€/mes). ¿Mostrar precios?'}[L],q:[{en:'Show pricing',de:'Preise',sv:'Visa priser',es:'Precios'}],nav:'pricing'};}return{msg:{en:'I can help find the right solution. Property type?',de:'Ich helfe Ihnen. Immobilientyp?',sv:'Jag kan hjälpa. Fastighetstyp?',es:'Puedo ayudar. ¿Tipo de propiedad?'}[L]};}
+        
+        function addMsg(t,w){const d=document.createElement('div');d.className='flex gap-3'+(w=='user'?' justify-end':'');d.innerHTML=w=='ai'?`<div class="w-8 h-8 bg-white/10 flex items-center justify-center text-white text-xs">AI</div><div class="bg-[#363636] border border-white/10 px-4 py-3 max-w-[75%]"><p class="text-sm font-light text-white">${t}</p></div>`:`<div class="bg-white/10 px-4 py-3 max-w-[75%]"><p class="text-sm font-light text-white">${t}</p></div><div class="w-8 h-8 bg-white/5 flex items-center justify-center text-xs text-muted">You</div>`;document.getElementById('msgs').appendChild(d);document.getElementById('msgs').scrollTop=999999;}
+        
+        function setQ(acts){const q=document.getElementById('quick');q.innerHTML='';acts.forEach(a=>{const b=document.createElement('button');b.className='text-xs bg-white/5 border border-white/10 px-3 py-2 hover:bg-white/10 transition font-light text-white';b.textContent=typeof a=='string'?a:a[L];b.onclick=()=>{document.getElementById('inp').value=b.textContent;send();};q.appendChild(b);});}
+        
+        const saved=localStorage.getItem('lang');if(saved)setLang(saved);
+    </script>
+</body>
+</html>
